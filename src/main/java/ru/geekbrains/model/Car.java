@@ -43,8 +43,9 @@ public class Car implements Runnable {
             System.out.println(this.name + " готовится");
             Thread.sleep(500 + (int)(Math.random() * 800));
             System.out.println(this.name + " готов");
-            cyclicBarrier.await();
+            // накапливаем для сброса
             cdl.countDown();
+            // ждем пока все приготовятся
             cyclicBarrier.await();
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,6 +56,7 @@ public class Car implements Runnable {
         if (!winnerDefined.getAndSet(true)) {
             System.out.println(this.name + " - WIN");
         }
+        // накапливаем завершение всех процессов для сброса
         cdlLast.countDown();
     }
 }

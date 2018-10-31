@@ -18,10 +18,15 @@ public class MainClass
 {
     private static final int CARS_COUNT = 4;
     public static void main(String[] args) {
+        // для старта всех одновременно
         final CyclicBarrier cyclicBarrier = new CyclicBarrier(CARS_COUNT);
+        // для второго важного объявления
         final CountDownLatch cdl = new CountDownLatch(CARS_COUNT);
+        // для третьего важного объявления
         final CountDownLatch cdlLast = new CountDownLatch(CARS_COUNT);
+        // для тоннеля
         final Semaphore semaphore = new Semaphore(CARS_COUNT / 2);
+        // для определения победителя
         final AtomicBoolean winnerDefined = new AtomicBoolean(false);
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Подготовка!!!");
         Race race = new Race(new Road(60), new Tunnel(semaphore), new Road(40));
@@ -33,13 +38,14 @@ public class MainClass
             new Thread(car).start();
         }
         try {
+            // ждем когда CARS_COUNT процессов приготовятся
             cdl.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
-        cyclicBarrier.reset();
         try {
+            // аналогично первому countdownlatch
             cdlLast.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
